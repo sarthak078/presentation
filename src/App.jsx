@@ -26,7 +26,7 @@ function App() {
         </p>
       </div>
       <p className="read-the-docs">
-        this is the testing project of database
+        this is the testing project of database of sarthak
       </p>
     </>
   )
