@@ -26,7 +26,7 @@ function App() {
         </p>
       </div>
       <p className="read-the-docs">
-        testing sarthak's code in ec2
+        testing sarthak's code in ec2.
       </p>
     </>
   )
