@@ -13,17 +13,19 @@ pipeline {
             steps {
                 sshagent(['033f1540-20ad-4fb8-80b3-275e8fa2bbe0']) {
                     sh '''
-                    ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} '
+                    ssh -o StrictHostKeyChecking=no ec2-user@3.145.147.27 << 'ENDSSH'
                         # Create directory if needed
-                        sudo mkdir -p ${APP_DIR}
-                        sudo chown -R $(whoami):$(whoami) ${APP_DIR}
+                        sudo mkdir -p /var/www/presentation
+                        sudo chown -R $(whoami):$(whoami) /var/www/presentation
                         
-                        cd ${APP_DIR}
+                        cd /var/www/presentation
                         
                         # Clone or pull
                         if [ ! -d .git ]; then
-                            git clone ${GIT_REPO} .
+                            echo "Cloning repository..."
+                            git clone https://github.com/sarthak078/presentation.git .
                         else
+                            echo "Updating repository..."
                             git reset --hard HEAD
                             git pull origin main
                         fi
@@ -31,11 +33,10 @@ pipeline {
                         # Run deployment
                         chmod +x deploy.sh
                         ./deploy.sh
-                    '
+ENDSSH
                     '''
                 }
             }
         }
     }
 }
-
