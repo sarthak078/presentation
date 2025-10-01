@@ -1,22 +1,32 @@
 pipeline {
     agent any
 
+    environment {
+        EC2_USER = "ec2-user"
+        EC2_IP = "3.137.150.170"
+        APP_DIR = "/var/www/presentation"
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/sarthak078/presentation.git'
+                git branch: 'main', url: 'git@github.com:sarthak078/presentation.git'
             }
         }
 
-        stage('Install dependencies') {
+        stage('Deploy to EC2') {
             steps {
-                sh 'npm install'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'npm run build'
+                sshagent(['033f1540-20ad-4fb8-80b3-275e8fa2bbe0']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} '
+                        cd ${APP_DIR} || exit 1
+                        git reset --hard HEAD
+                        git pull origin main
+                        chmod +x deploy.sh
+                        ./deploy.sh
+                    '
+                    """
+                }
             }
         }
     }
