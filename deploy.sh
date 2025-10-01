@@ -25,12 +25,12 @@ else
     git clone "$GIT_REPO" .
 fi
 
-# --- Install Node.js 20.x if needed ---
+# --- Install Node.js 20.x on Amazon Linux if needed ---
 NODE_VERSION=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
 if [ "$NODE_VERSION" -lt 20 ]; then
-    echo "Upgrading Node.js to v20..."
-    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-    sudo apt-get install -y nodejs
+    echo "Installing Node.js 20.x..."
+    curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
+    sudo yum install -y nodejs
 fi
 
 # --- Make deploy.sh executable ---
