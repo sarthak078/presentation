@@ -16,8 +16,10 @@ cd "$APP_DIR"
 
 # First-time clone or pull updates
 if [ ! -d .git ]; then
+    echo "Cloning repo for the first time..."
     git clone "$GIT_REPO" .
 else
+    echo "Updating existing repo..."
     git reset --hard HEAD
     git pull origin main
 fi
@@ -25,7 +27,7 @@ fi
 # Make sure deploy.sh is executable
 chmod +x deploy.sh
 
-# Complete cleanup
+# Clean previous build
 rm -rf node_modules package-lock.json "$BUILD_DIR" .vite
 npm cache clean --force
 
