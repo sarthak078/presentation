@@ -6,12 +6,12 @@ GIT_REPO=https://github.com/sarthak078/presentation.git
 BUILD_DIR=dist
 NGINX_DIR=/usr/share/nginx/html
 
-# Ensure app directory exists
+# --- Prepare App Directory ---
 sudo mkdir -p "$APP_DIR"
 sudo chown -R $(whoami):$(whoami) "$APP_DIR"
 cd "$APP_DIR"
 
-# Determine how to get repo
+# --- Clone or Update Repo ---
 if [ -d .git ]; then
     echo "Updating existing repository..."
     git reset --hard HEAD
@@ -25,18 +25,30 @@ else
     git clone "$GIT_REPO" .
 fi
 
-# Make deploy.sh executable
+# --- Install Node.js 20.x if needed ---
+NODE_VERSION=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
+if [ "$NODE_VERSION" -lt 20 ]; then
+    echo "Upgrading Node.js to v20..."
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+fi
+
+# --- Make deploy.sh executable ---
 chmod +x deploy.sh || true
 
-# Clean previous build
+# --- Clean old build ---
 rm -rf node_modules package-lock.json "$BUILD_DIR" .vite
 npm cache clean --force
 
-# Install dependencies and build
+# --- Install dependencies ---
 npm install
-npm run build -- --verbose
+npm install vite@5.4.8 --save-dev
+npm install @vitejs/plugin-react@4.3.1 --save-dev
 
-# Deploy to Nginx
+# --- Build app ---
+npm run build
+
+# --- Deploy to Nginx ---
 sudo rm -rf "$NGINX_DIR"/*
 sudo cp -r "$BUILD_DIR"/* "$NGINX_DIR"/
 sudo systemctl restart nginx
