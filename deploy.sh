@@ -1,32 +1,31 @@
 #!/bin/bash
 set -e
 
-# --- Configuration ---
 APP_DIR=/var/www/presentation
 GIT_REPO=https://github.com/sarthak078/presentation.git
 BUILD_DIR=dist
 NGINX_DIR=/usr/share/nginx/html
 
-# --- Prepare App Directory ---
-if [ ! -d "$APP_DIR" ]; then
-    echo "Creating app directory..."
-    sudo mkdir -p "$APP_DIR"
-    sudo chown -R $(whoami):$(whoami) "$APP_DIR"
-fi
-
+# Ensure app directory exists
+sudo mkdir -p "$APP_DIR"
+sudo chown -R $(whoami):$(whoami) "$APP_DIR"
 cd "$APP_DIR"
 
-# --- Clone or Update Repo ---
-if [ ! -d .git ]; then
-    echo "Cloning repository..."
-    git clone "$GIT_REPO" .
-else
-    echo "Updating repository..."
+# Determine how to get repo
+if [ -d .git ]; then
+    echo "Updating existing repository..."
     git reset --hard HEAD
     git pull origin main
+elif [ "$(ls -A)" ]; then
+    echo "Directory not empty but no Git repo, cleaning up..."
+    rm -rf ./*
+    git clone "$GIT_REPO" .
+else
+    echo "Cloning repository into empty directory..."
+    git clone "$GIT_REPO" .
 fi
 
-# --- Build & Deploy ---
+# Make deploy.sh executable
 chmod +x deploy.sh || true
 
 # Clean previous build
