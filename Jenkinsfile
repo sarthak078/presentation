@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         EC2_USER = "ec2-user"
-        EC2_IP = "3.145.147.27" // replace with your EC2 public IP
+        EC2_IP = "18.222.133.223" // replace with your EC2 public IP
     }
 
     stages {
