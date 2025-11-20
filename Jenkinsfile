@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Deploy to EC2') {
             steps {
-                sshagent(['033f1540-20ad-4fb8-80b3-275e8fa2bbe0']) {
+                sshagent(['3eab426f-5c36-405a-b494-259c1964c912']) {
                     sh """
                     ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_IP} '
                         bash -s' < deploy.sh
