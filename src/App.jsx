@@ -26,7 +26,7 @@ function App() {
         </p>
       </div>
       <p className="read-the-docs">
-        Hello 6:04
+        Hello 3:27
       </p>
     </>
   )
